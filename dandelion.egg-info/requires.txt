@@ -1,0 +1,4 @@
+h5py==3.9.0
+rdkit==2023.3.3
+tqdm==4.66.1
+typing-extensions==4.8.0

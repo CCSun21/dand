@@ -1,0 +1,3 @@
+[console_scripts]
+dandelion = dandelion.dandelion:main
+dandelion_refine = dandelion.dandelion_refine:main
