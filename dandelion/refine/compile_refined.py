@@ -13,27 +13,36 @@ def main(args):
     
     # Data structure to hold the computed results
     rxn_data = {}
+    
+    rows = []  # List to store all rows
 
     # Extract data from ASE database
     with connect(input_path) as db:
         for row in db.select():
-            # Extract unique_id and other data
-            unique_id = row.data['unique_id']
-            chem_group_name, rxn_group_name, index = unique_id.split('_')
+            rows.append(row)
             
-            if chem_group_name not in rxn_data:
-                rxn_data[chem_group_name] = {}
-            
-            if rxn_group_name not in rxn_data[chem_group_name]:
-                rxn_data[chem_group_name][rxn_group_name] = {
-                    'atomic_numbers': row.toatoms().numbers,
-                    'energies': [],
-                    'forces': [],
-                    'positions': []
-                }
-            rxn_data[chem_group_name][rxn_group_name]['energies'].append(row.energy)
-            rxn_data[chem_group_name][rxn_group_name]['forces'].append(row.forces)
-            rxn_data[chem_group_name][rxn_group_name]['positions'].append(row.toatoms().positions)
+    # Sort rows based on the unique_id number
+    rows.sort(key=lambda r: int(r.data['unique_id'].split('_')[-1]))
+
+    # Process sorted rows
+    for row in rows:
+        # Extract unique_id and other data
+        unique_id = row.data['unique_id']
+        chem_group_name, rxn_group_name, index = unique_id.split('_')
+        
+        if chem_group_name not in rxn_data:
+            rxn_data[chem_group_name] = {}
+        
+        if rxn_group_name not in rxn_data[chem_group_name]:
+            rxn_data[chem_group_name][rxn_group_name] = {
+                'atomic_numbers': row.toatoms().numbers,
+                'energies': [],
+                'forces': [],
+                'positions': []
+            }
+        rxn_data[chem_group_name][rxn_group_name]['energies'].append(row.energy)
+        rxn_data[chem_group_name][rxn_group_name]['forces'].append(row.forces)
+        rxn_data[chem_group_name][rxn_group_name]['positions'].append(row.toatoms().positions)
 
     # Save the data to an h5 file
     with h5py.File(output_path, 'w') as h5file:

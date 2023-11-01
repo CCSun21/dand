@@ -7,6 +7,12 @@
 ### Removed 
 ### Fixed
 
+## [0.5.2] - 2023-11-2
+
+### Fixed
+- compile_refined.py: sorting the rows in the right order
+
+
 ## [0.5.1] - 2023-10-17
 
 ### Added
