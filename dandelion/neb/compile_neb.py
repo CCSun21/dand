@@ -163,9 +163,9 @@ def print_args(args):
 def get_parser():
     parser = argparse.ArgumentParser(description="Compile filtered neb jobs to xtb h5 file.")
     
-    parser.add_argument('-i', '--input_path',
+    parser.add_argument('-i', '--input_path', required=True, 
                         help="Path of reactions.json, contains all reactions that should be included in the dataset ")
-    parser.add_argument('-o', '--output_path', 
+    parser.add_argument('-o', '--output_path', required=True, 
                         help="Path to the h5 file to write to")
     
     return parser

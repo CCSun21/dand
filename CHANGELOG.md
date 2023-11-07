@@ -3,6 +3,8 @@
 ## [Unreleased] - 2023-10-12
 
 ### Added
+- dandelion.py: in the footer, print # of mothers, # of reactions, # of samples
+- filter_neb.py: filter out sigmoidal energy curve(reverse activation energy<=5)
 ### Changed 
 ### Removed 
 ### Fixed

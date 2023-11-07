@@ -21,6 +21,7 @@ from xtb.ase.calculator import XTB
 from ase.optimize.bfgs import BFGS
 from ase.utils.forcecurve import fit_images
 from ase.neb import NEB, NEBOptimizer, NEBTools
+from ase.calculators.orca import ORCA
 
 class SuppressStderr:
     def __enter__(self):
@@ -169,7 +170,8 @@ def process_seed(seed, n_images, neb_fmax, cineb_fmax, steps, output_path):
             atom_configs = [reactant.copy() for i in range(n_images - 1)] + [product]
             
             for i, atom_config in enumerate(atom_configs):
-                atom_config.calc = XTB(method='GFN2-xTB')
+                atom_config.calc = ORCA(orcasimpleinput="wB97X 6-31G(d)")
+
 
             #print("Relaxing endpoints ... ")
             BFGS(atom_configs[0], logfile=None).run()
