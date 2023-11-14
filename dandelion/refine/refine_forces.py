@@ -113,7 +113,7 @@ def compute_force(coord, atomic_numbers, unique_id, output_path):
     atoms = Atoms(positions=coord, numbers=atomic_numbers)
     atoms.calc = ORCA(
         label=os.path.join(os.path.dirname(output_path), f"orca/{unique_id}/{unique_id}"),
-        orcasimpleinput="wB97X 6-31G(d)",
+        orcasimpleinput="wB97X 6-31G(d) NoTrah",
         orcablocks=custom_basis
     )
     try:

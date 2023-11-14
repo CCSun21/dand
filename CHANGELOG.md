@@ -9,6 +9,21 @@
 ### Removed 
 ### Fixed
 
+## [0.5.5] - 2023-11-14
+
+### Added
+- run_neb.py: added argument fmax_threshold (default=0.1ev/A)
+
+### Fixed
+- refine_forces.py: added NoTrah for the orca command
+
+
+## [0.5.4] - 2023-11-7
+
+### Fixed
+- compile_neb.py: fixed argparser that had no required=True
+
+
 ## [0.5.3] - 2023-11-2
 
 ### Fixed

@@ -16,7 +16,7 @@ def get_hash(row):
     s = str(row.positions) + row.formula
     return int(hashlib.sha1(s.encode("utf-8")).hexdigest(), 16) % (10 ** 8)
 
-def write_rxn(h5file, fmaxs_path, db_path, rxn):
+def write_rxn(h5file, fmaxs_path, db_path, rxn, fmax_threshold):
     fmaxs = json.load(open(fmaxs_path))
 
     skip_next = False
@@ -33,7 +33,7 @@ def write_rxn(h5file, fmaxs_path, db_path, rxn):
             if last:
                 skip_this = False
 
-            if cum_fmax < 0.1:
+            if cum_fmax < fmax_threshold:
                 skip_next = True
 
             else:
@@ -126,6 +126,7 @@ def main(args):
     
     input_path = args.input_path
     output_path = args.output_path
+    fmax_threshold = args.fmax_threshold
     
     try:
         rxns = json.load(open(input_path))
@@ -145,7 +146,7 @@ def main(args):
         db_path = os.path.join(path, "neb.db")
 
         new_rxn_name = f"rxn{str(i).zfill(4)}"
-        write_rxn(data, fmaxs_path, db_path, new_rxn_name)
+        write_rxn(data, fmaxs_path, db_path, new_rxn_name, fmax_threshold)
         index[new_rxn_name] = os.path.basename(path)
 
     json.dump(index, indexfile, indent=4)
@@ -167,7 +168,8 @@ def get_parser():
                         help="Path of reactions.json, contains all reactions that should be included in the dataset ")
     parser.add_argument('-o', '--output_path', required=True, 
                         help="Path to the h5 file to write to")
-    
+    parser.add_argument('--fmax_threshold', type=int, default=0.1,
+                        help='Fmax threshold for selecting bands')
     return parser
 
 if __name__ == "__main__":
