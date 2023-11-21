@@ -1,4 +1,5 @@
 import os
+import logging
 import argparse
 from itertools import repeat
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -95,13 +96,14 @@ bar_format_hr = '{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate
 bar_format_min = '{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_min}{postfix}]'
 bar_format_points = '{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]'
 
-def get_unique_ids_from_db(db):
+def get_unique_ids_from_db(output_path):
     """Extract all unique IDs from the ASE database."""
     unique_ids = set()
-    for row in db.select():
-        data = row.data
-        if "unique_id" in data:
-            unique_ids.add(data['unique_id'])
+    with connect(output_path) as db: 
+        for row in db.select():
+            data = row.data
+            if "unique_id" in data:
+                unique_ids.add(data['unique_id'])
     return unique_ids
 
 def already_calculated(unique_id, unique_id_list):
@@ -117,17 +119,19 @@ def compute_force(coord, atomic_numbers, unique_id, output_path):
         orcablocks=custom_basis
     )
     try:
-        atoms.get_forces()  # Forces and energy will be stored in the calculator of the Atoms object.
+        # Forces and energy will be stored in the calculator of the Atoms object.
+        atoms.get_forces()
         return atoms
-    except: # not converged
+    except Exception as e:
+        # Log the error
+        logging.error(f"Error in computing forces for unique_id {unique_id}: {e}")
         return None
-
-def delete_orca_results(unique_id, output_path, file_exts=['gbw', 'engrad', 'densities', 'ase']):
-    """Delete specific file types based on the unique ID."""
+    
+def accumulate_files_for_deletion(unique_id, output_path, files_to_delete, file_exts=['gbw', 'engrad', 'densities', 'ase']):
     for ext in file_exts:
         file_path = os.path.join(os.path.dirname(output_path), f"orca/{unique_id}/{unique_id}.{ext}")
         if os.path.exists(file_path):
-            os.remove(file_path)
+            files_to_delete.add(file_path)
             
 def main(args):
     """Main function to orchestrate the computations and database writing."""
@@ -137,9 +141,15 @@ def main(args):
     output_path = args.output_path
     max_workers = args.max_workers
     orcabinary = args.orca
+    
+    os.environ["ASE_ORCA_COMMAND"] = f"{orcabinary} PREFIX.inp > PREFIX.out 2>&1"
+    
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)  
 
-    os.environ["ASE_ORCA_COMMAND"] = f"{orcabinary} PREFIX.inp > PREFIX.out"
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)  # Ensure ORCA output directory exists.
+    log_file_path = os.path.join(os.path.dirname(output_path), 'orca_errors.log')
+    logging.basicConfig(filename=log_file_path, level=logging.ERROR, 
+                        format='%(asctime)s %(levelname)s: %(message)s', 
+                        datefmt='%Y-%m-%d %H:%M:%S')
 
     if os.path.isfile(output_path):
         print(f'Restarting calculation from {output_path}')
@@ -148,29 +158,30 @@ def main(args):
         print(f'Created db file at {output_path}\n')
         is_restart = False
 
-    db = connect(output_path)
-    unique_ids_from_db = get_unique_ids_from_db(db)
 
+    unique_ids_from_db = get_unique_ids_from_db(output_path)
     if is_restart:
         print(f'{len(unique_ids_from_db)} points are skipped.\n')
+        
+    files_to_delete = set()  # Set to accumulate files for deletion
 
     # Read from the input HDF5 file and compute the energies and forces.
     with h5py.File(input_path, 'r') as f:
         
         for chem_group_name, chem_group in tqdm_hour(f['data'].items(), 
-                                                    desc="Formulas", 
-                                                    position=0, 
-                                                    smoothing=1, 
-                                                    bar_format=bar_format_hr,
-                                                    ncols=70):
+                                                     desc="Formulas", 
+                                                     position=0, 
+                                                     smoothing=1, 
+                                                     bar_format=bar_format_hr,
+                                                     ncols=70):
             
             for rxn_group_name, rxn_group in tqdm_minute(chem_group.items(), 
-                                                        desc=f"Rxns in {chem_group_name}", 
-                                                        leave=False, 
-                                                        position=1, 
-                                                        smoothing=1, 
-                                                        bar_format=bar_format_min,
-                                                        ncols=70):
+                                                         desc=f"Rxns in {chem_group_name}", 
+                                                         leave=False, 
+                                                         position=1, 
+                                                         smoothing=1, 
+                                                         bar_format=bar_format_min,
+                                                         ncols=70):
                 
                 positions_dataset = rxn_group['positions']
                 coords = [coord for coord in positions_dataset]
@@ -184,21 +195,40 @@ def main(args):
                                             for coord, atomic_number, unique_id in zip(coords, args_atomic_numbers, unique_ids) 
                                             if not already_calculated(unique_id, unique_ids_from_db)}
 
+                    batch_size = max_workers  # Batch size set to the number of workers
+                    results_batch = []
+
                     # Process the completed tasks.
                     for future in tqdm(as_completed(future_to_unique_id), 
-                                        total=len(future_to_unique_id), 
-                                        desc=f"Samples in {rxn_group_name}", 
-                                        leave=False, 
-                                        position=2, 
-                                        smoothing=0, 
-                                        bar_format=bar_format_points,
-                                        ncols=70):
+                                       total=len(future_to_unique_id), 
+                                       desc=f"Samples in {rxn_group_name}", 
+                                       leave=False, 
+                                       position=2, 
+                                       smoothing=0, 
+                                       bar_format=bar_format_points,
+                                       ncols=70):
                         
                         unique_id = future_to_unique_id[future]
                         atoms_result = future.result() # Finished ASE Atoms object
                         if atoms_result is not None:
-                            db.write(atoms_result, data={'unique_id':unique_id})
-                            delete_orca_results(unique_id, output_path)
+                            results_batch.append((atoms_result, {'unique_id': unique_id}))
+                            accumulate_files_for_deletion(unique_id, output_path, files_to_delete)
+
+                        # Write to database in batches
+                        if len(results_batch) >= batch_size:
+                            with connect(output_path) as db:
+                                for atoms, data in results_batch:
+                                    db.write(atoms, data=data)
+                            results_batch.clear()
+
+                    # Write any remaining results in the batch
+                    for atoms, data in results_batch:
+                        with connect(output_path) as db:
+                            db.write(atoms, data=data)
+                    results_batch.clear()
+    
+    for file_path in files_to_delete:
+        os.remove(file_path)
 
     print('wB97X calculation finished!')
 

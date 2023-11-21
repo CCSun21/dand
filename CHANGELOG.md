@@ -3,11 +3,22 @@
 ## [Unreleased] - 2023-10-12
 
 ### Added
-- dandelion.py: in the footer, print # of mothers, # of reactions, # of samples
-- filter_neb.py: filter out sigmoidal energy curve(reverse activation energy<=5)
 ### Changed 
 ### Removed 
 ### Fixed
+
+
+## [0.6.0] - 2023-11-21
+
+### Added
+- filter_neb.py: added function is_valid_reaction to filter out weird rxn
+
+## [0.5.6] - 2023-11-21
+
+### Changed
+- refine_forces.py: suppress error in force calculation, save to orca_error.log
+- refine_forces.py: now save samples in batch
+- refine_forces.py: open .db file with statement
 
 ## [0.5.5] - 2023-11-14
 

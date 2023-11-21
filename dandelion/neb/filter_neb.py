@@ -10,8 +10,35 @@ from ase.io import read
 from ase.vibrations import Vibrations
 from xtb.ase.calculator import XTB
 
+def get_energy_from_xyz(file_path):
+    """Extracts the energy of a structure from an XYZ file."""
+    try:
+        atom = read(file_path)
+        return atom.get_potential_energy()
+    except:
+        return None
 
-def is_transition_state(struc, threshold=50): #cm-1
+def is_valid_rxn(reactant_path, product_path, ts_path):
+    """Check if the reaction is valid based on energy."""
+    
+    reactant_energy = get_energy_from_xyz(reactant_path)
+    product_energy = get_energy_from_xyz(product_path)
+    ts_energy = get_energy_from_xyz(ts_path)
+    
+    if abs(reactant_energy - product_energy) < 5 * 0.0433634: # delta E below 5 kcal/mol
+        return False
+    
+    if abs(ts_energy - reactant_energy) < 5 * 0.0433634: # reverse AE below 5 kcal/mol
+        return False
+    
+    if abs(ts_energy - product_energy) < 5 * 0.0433634: # reverse AE below 5 kcal/mol
+        return False
+
+    return product_energy != ts_energy
+
+
+def is_transition_state(ts_file_path, threshold=50): #cm-1
+    struc = read(ts_file_path)
     struc.calc = XTB(method="GFN2-xTB")
     
     try:
@@ -52,12 +79,14 @@ def main(args):
         for f in tqdm(seeds, desc=f"Rxns in {mother_string}", position=1, bar_format=bar_format, ncols=70, leave=False):
 
             ts_file_path = os.path.join(f, 'transition_state.xyz')
-            if not os.path.exists(ts_file_path):
+            reactant_path = os.path.join(f, 'reactant.xyz')
+            product_path = os.path.join(f, 'product.xyz')
+
+            if not is_valid_rxn(reactant_path, product_path, ts_file_path):
                 continue
             
-            struc = read(ts_file_path)
-            if not is_transition_state(struc):
-                #print(f"Directory {f} is not a genuine transition state. Skipping...")
+            if not is_transition_state(ts_file_path):
+                # print(f"Directory {f} is not a valid reaction. Skipping...")
                 continue
 
             # If True, copy the directory
