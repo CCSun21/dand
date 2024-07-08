@@ -8,6 +8,19 @@
 ### Fixed
 
 
+## [0.6.2] - 2024-07-08
+
+### Fixed
+- dandelion.py name changed to dandelion_refine.py
+
+
+
+## [0.6.1] - 2024-01-14
+
+### Changed
+- compile_refined.py: bug fixed when atomrow doesn't have 'energy' and 'forces'
+
+
 ## [0.6.0] - 2023-11-21
 
 ### Added

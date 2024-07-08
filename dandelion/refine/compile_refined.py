@@ -19,7 +19,8 @@ def main(args):
     # Extract data from ASE database
     with connect(input_path) as db:
         for row in db.select():
-            rows.append(row)
+            if hasattr(row, 'energy') and hasattr(row, 'forces'):
+                rows.append(row)
             
     # Sort rows based on the unique_id number
     rows.sort(key=lambda r: int(r.data['unique_id'].split('_')[-1]))

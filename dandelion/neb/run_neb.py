@@ -170,8 +170,7 @@ def process_seed(seed, n_images, neb_fmax, cineb_fmax, steps, output_path):
             atom_configs = [reactant.copy() for i in range(n_images - 1)] + [product]
             
             for i, atom_config in enumerate(atom_configs):
-                atom_config.calc = ORCA(orcasimpleinput="wB97X 6-31G(d)")
-
+                atom_config.calc = XTB(method='GFN2-xTB')
 
             #print("Relaxing endpoints ... ")
             BFGS(atom_configs[0], logfile=None).run()
