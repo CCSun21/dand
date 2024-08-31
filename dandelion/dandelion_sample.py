@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 import os
+import sys
 import time
 import argparse
 
-from dandelion import __version__
+from dandelion import __version__, print_separator, merge_args_with_defaults
 from dandelion.segsm.create_gsm import main as create_gsm, get_parser as create_gsm_parser
 from dandelion.segsm.run_gsm import main as run_gsm, get_parser as run_gsm_parser
 from dandelion.segsm.filter_gsm import main as filter_gsm, get_parser as filter_gsm_parser
@@ -11,31 +12,6 @@ from dandelion.neb.run_neb import main as run_neb, get_parser as run_neb_parser
 from dandelion.neb.filter_neb import main as filter_neb, get_parser as filter_neb_parser
 from dandelion.neb.compile_neb import main as compile_neb, get_parser as compile_neb_parser
 
-
-def merge_args_with_defaults(module_parser, custom_args):
-    """
-    Merge custom arguments with module defaults.
-    Args:
-    - module_parser: the module parser function
-    - custom_args: dictionary of custom arguments
-
-    Returns:
-    - argparse.Namespace: merged namespace of arguments
-    """
-    
-    parser = module_parser()
-    for action in parser._actions:
-        if action.required:
-            action.required = False
-
-    defaults = vars(parser.parse_args([]))
-    defaults.update(custom_args)
-
-    for action in parser._actions:
-        if not action.required and action.dest in custom_args:
-            action.required = True
-
-    return argparse.Namespace(**defaults)
 
 def print_header(width=70):
     
@@ -52,29 +28,19 @@ def print_header(width=70):
     
 {"Chemical compound space sampling".center(width)}    
 {"near transition state using xTB, SE-GSM and NEB".center(width)}    
-{("Ver. " + __version__  + " by mlee").center(width)}
+{("Dandelion " + __version__  + " by mlee").center(width)}
 ''')
-
-def print_separator(text, width=70):
-    border = "╔" + "═" * (width-2) + "╗"
-    
-    total_symbols_len = width - len(text) - 4  
-    half_len = total_symbols_len // 2
-    left_symbol = "║" + " " * (half_len - 1)
-    right_symbol = " " * (total_symbols_len - half_len - 1) + "║"
-    separator = left_symbol + '  ' + text + '  ' + right_symbol
-    
-    end = "╚" + "═" * (width-2) + "╝"
-    print("\n\n" + border)
-    print(separator)
-    print(end + "\n\n")
 
 
 def main():
     args = parse_arguments()
     
     input_path = args.input_path
-    output_path = args.output_path
+    if not os.path.isdir(input_path):
+        print(f"Error: The specified input path '{input_path}' is not a directory.", file=sys.stderr)
+        sys.exit(1)
+    
+    output_path = os.path.dirname(os.path.dirname(input_path))
     max_workers = args.max_workers
     
     if not os.path.exists(output_path):
@@ -110,6 +76,7 @@ def main():
     ]
 
     print_header()
+    
     for title, function, parser, custom_args in phases:
         time.sleep(3)
         print_separator(title)
@@ -118,13 +85,11 @@ def main():
 
 
 def parse_arguments():
-    parser = argparse.ArgumentParser(description='Do SEGSM and NEB from mother structures,\
+    parser = argparse.ArgumentParser(description='Do SEGSM and NEB from reactant structures,\
                                      Other parameters can be set in each modules')
     
     parser.add_argument('-i', '--input_path', required=True, 
-                        help='Input path of mother structures')    
-    parser.add_argument('-o', '--output_path', required=True, 
-                        help='Output path of dandelion')
+                        help='Input path of reactant structures (must be a directory)')    
     parser.add_argument('-n', '--max_workers', type=int, required=True, 
                         help='Number of worker processes')
     return parser.parse_args()

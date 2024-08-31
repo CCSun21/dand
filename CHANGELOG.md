@@ -3,15 +3,32 @@
 ## [Unreleased] - 2023-10-12
 
 ### Added
+- run_gsm.py: added test if gsm command is available
+- filter_gsm.py: added step where optimize product with xTB and if RMSD change is big, filter out the reaction
+
+### Added
 ### Changed 
 ### Removed 
 ### Fixed
 
+## [0.7.0] - 2024-08-31
 
+### Added
+- Sampling iso/conformers is included as a preparatory step in dandelion.
+  1. smiles_to_isoconfs.py
+  2. geom_opt.py
+  3. dandelion_prep.py
+   
+- cli.py: to invoke dandelion like 'dand prep -i ./a.smi -n 40' in cli.
+
+### Changed 
+- dandelion is shortend as 'dand' in cli.
+- dandelion_sample.py: default argument '0_mothers' changed to '0_reactants'
+- print_separator, merge_args_with_defaults are moved to init.py
 ## [0.6.2] - 2024-07-08
 
 ### Fixed
-- dandelion.py name changed to dandelion_refine.py
+- dandelion.py: name changed to dandelion_refine.py
 
 
 
