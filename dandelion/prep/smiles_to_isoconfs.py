@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import subprocess
 
@@ -28,6 +29,8 @@ def main(args):
     print_args(args)
     
     input_path = os.path.abspath(args.input_path)
+    if not os.path.isfile(input_path):
+        sys.exit(f"Error: '{input_path}' is not a file.")
     output_path = os.path.abspath(args.output_path)
     
     if not os.path.exists(output_path):

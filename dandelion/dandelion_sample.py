@@ -37,9 +37,7 @@ def main():
     
     input_path = args.input_path
     if not os.path.isdir(input_path):
-        print(f"Error: The specified input path '{input_path}' is not a directory.", file=sys.stderr)
-        sys.exit(1)
-    
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     output_path = os.path.dirname(os.path.dirname(input_path))
     max_workers = args.max_workers
     

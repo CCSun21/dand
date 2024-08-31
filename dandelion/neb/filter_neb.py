@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import shutil
 import argparse
@@ -59,8 +60,9 @@ def main(args):
     print_args(args)
 
     input_path  = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     output_path = args.output_path
-    
     if not os.path.exists(output_path):
         os.mkdir(output_path)
 

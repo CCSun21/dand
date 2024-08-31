@@ -1,4 +1,5 @@
 import os
+import sys
 import argparse
 import subprocess
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -19,6 +20,8 @@ def main(args):
     print_args(args)
     
     input_path = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     max_workers = args.max_workers
 
     # Find all directories containing gsm.sh scripts

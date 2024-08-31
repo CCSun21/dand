@@ -1,4 +1,5 @@
 import os
+import sys
 import glob
 import shutil
 import argparse
@@ -163,7 +164,11 @@ def main(args):
     print_args(args)
     
     input_path  = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     output_path = args.output_path
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
     barrier_max = args.barrier_max
     barrier_min = args.barrier_min
     delta_e_min = args.delta_e_min

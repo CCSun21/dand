@@ -1,7 +1,9 @@
 import os
+import sys
 import shutil
 import argparse
 import warnings
+
 from ase.io import read
 from ase.optimize import BFGS
 from xtb.ase.calculator import XTB
@@ -42,6 +44,8 @@ def main(args):
     print_args(args)
     
     input_path = os.path.abspath(args.input_path)
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     output_path = os.path.abspath(args.output_path)
     max_workers = args.max_workers
     

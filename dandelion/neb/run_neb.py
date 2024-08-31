@@ -233,12 +233,16 @@ def main(args):
     print_args(args)
     
     input_path  = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
+    output_path = args.output_path
+    if not os.path.exists(output_path):
+        os.mkdir(output_path)
     max_workers = args.max_workers
     n_images    = args.n_images
     neb_fmax    = args.neb_fmax
     cineb_fmax  = args.cineb_fmax
     steps       = args.steps
-    output_path = args.output_path
 
     
     seeds = [dirpath for dirpath, _, filenames in os.walk(input_path) if "ts.png" in filenames]

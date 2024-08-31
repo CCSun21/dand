@@ -125,14 +125,12 @@ def main(args):
     print_args(args)
     
     input_path = args.input_path
+    if not os.path.isfile(input_path):
+        sys.exit(f"Error: '{input_path}' is not a file.")
     output_path = args.output_path
     fmax_threshold = args.fmax_threshold
-    
-    try:
-        rxns = json.load(open(input_path))
-    except IsADirectoryError:
-        print('Input path should include reactions.json!')
-        sys.exit(1)
+
+    rxns = json.load(open(input_path))
     h5file = h5py.File(output_path, "w")
 
     data = h5file.create_group("data")

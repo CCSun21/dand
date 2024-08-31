@@ -1,3 +1,4 @@
+import sys
 import argparse
 
 import h5py
@@ -9,6 +10,8 @@ def main(args):
     print_args(args)
     
     input_path  = args.input_path
+    if not os.path.isfile(input_path):
+        sys.exit(f"Error: '{input_path}' is not a file.")
     output_path = args.output_path
     
     # Data structure to hold the computed results

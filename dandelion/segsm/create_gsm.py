@@ -14,6 +14,8 @@ def main(args):
     print_args(args)
     
     input_path           = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
     output_path          = args.output_path
     maxbreak             = args.maxbreak
     maxform              = args.maxform
@@ -23,7 +25,6 @@ def main(args):
     minchange            = args.minchange
     ignore_single_change = args.ignore_single_change
     equiv_Hs             = args.equiv_Hs
-
 
     pdir = output_path
     if not os.path.exists(pdir):

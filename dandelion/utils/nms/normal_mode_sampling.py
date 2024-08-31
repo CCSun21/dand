@@ -1,9 +1,10 @@
-# %%
 import os
 import shutil
 import numpy as np
+
 from ase import Atoms
 from ase.io import read
+from ase.db import connect
 from ase.optimize import BFGS
 from ase.vibrations import Vibrations
 from ase.build import minimize_rotation_and_translation
@@ -118,25 +119,54 @@ def generate_eq_and_non_eq_strucs(eq_struc, temp=1500):
         
     return eq_struc, non_eq_strucs
 
-# %%
-prem_dir = './non_8Cl_6'
 
-from ase.db import connect
-with connect('./noneq.db') as db:
-    for root, dirs, files in os.walk(prem_dir):
-        for filename in files:
-            if filename.endswith('.xyz'):
-                
-                #Get the premature xyz
-                xyz_path = os.path.join(root, filename)
-                premature = read(xyz_path)
+def main(args):
+    
+    print_args(args)
+    
+    input_path  = args.input_path
+    if not os.path.isdir(input_path):
+        sys.exit(f"Error: '{input_path}' is not a directory.")
+    output_path  = args.output_path
 
-                eq_struc, non_eq_strucs = generate_eq_and_non_eq_strucs(premature)
-                align_non_eq_strucs(eq_struc, non_eq_strucs)
-                db.write(eq_struc)
+    with connect(output_path) as db:
+        for root, dirs, files in os.walk(input_path):
+            for filename in files:
+                if filename.endswith('.xyz'):
+                    
+                    #Get the premature xyz
+                    xyz_path = os.path.join(root, filename)
+                    premature = read(xyz_path)
 
-                ####### Write the non-equilibrium structure to the subdirectory #######
-                for i, non_eq_struc in enumerate(non_eq_strucs):
-                    db.write(non_eq_struc)
+                    eq_struc, non_eq_strucs = generate_eq_and_non_eq_strucs(premature)
+                    align_non_eq_strucs(eq_struc, non_eq_strucs)
+                    db.write(eq_struc)
+
+                    ####### Write the non-equilibrium structure to the subdirectory #######
+                    for i, non_eq_struc in enumerate(non_eq_strucs):
+                        db.write(non_eq_struc)
 
 
+def print_args(args):
+    print()
+    print("Arguments provided:")
+    arg_dict = vars(args)
+    for key, value in arg_dict.items():
+        print(f"  {key}: {value}")
+    print()
+    
+
+def get_parser():
+    parser = argparse.ArgumentParser(description="Run normal mode sampling")
+
+    parser.add_argument('-i', '--input_path', type=str, required=True,
+                        help='Path of input directory containing reactants')
+    parser.add_argument('-o', '--output_path', type=str, required=True,
+                        help='Path of output ase db file.')
+
+    return parser
+
+
+if __name__ == "__main__":
+    args = get_parser().parse_args()
+    main(args)

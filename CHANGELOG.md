@@ -11,6 +11,16 @@
 ### Removed 
 ### Fixed
 
+## [0.7.1] - 2024-09-01
+
+### Added
+- Normal mode sampling codes are added to utils/nms.
+  1. normal_mode_sampling.py
+  2. refine_forces_nms.py
+
+### Fixed
+- All code now assert the type of the input_path (dir or file)
+
 ## [0.7.0] - 2024-08-31
 
 ### Added

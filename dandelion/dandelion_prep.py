@@ -37,8 +37,7 @@ def main():
     
     input_path = args.input_path
     if not os.path.isfile(input_path):
-        print(f"Error: The specified input path '{input_path}' is not a file.", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(f"Error: '{input_path}' is not a file.")
     working_path = os.path.dirname(input_path)
     max_workers = args.max_workers
 
