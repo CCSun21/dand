@@ -6,10 +6,20 @@
 - run_gsm.py: added test if gsm command is available
 - filter_gsm.py: added step where optimize product with xTB and if RMSD change is big, filter out the reaction
 
+
 ### Added
 ### Changed 
 ### Removed 
 ### Fixed
+
+## [0.7.2] - 2024-09-02
+### Added
+- Utility that handle db and h5 files are added to utils/db_h5_tools.
+  1. db_to_h5.py
+  2. h5_to_db.py
+  3. make_db_from_xyzs.py
+  4. merge_db.py
+  5. merge_h5.py
 
 ## [0.7.1] - 2024-09-01
 
