@@ -12,6 +12,11 @@
 ### Removed 
 ### Fixed
 
+## [0.7.3] - 2024-10-08
+### Changed 
+- segsm/ard_gsm/mol.py: This version works with radicals. no assumption of four connections on carbon atoms. Also works with other heavy elementts.
+
+
 ## [0.7.2] - 2024-09-02
 ### Added
 - Utility that handle db and h5 files are added to utils/db_h5_tools.

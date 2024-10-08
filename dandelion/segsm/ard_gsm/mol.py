@@ -400,7 +400,7 @@ class MolGraph(object):
         with an even number of electrons are singlets. This method also assumes
         that none of the atoms are charged.
         """
-        valence_electrons = {'H': 1, 'C': 4, 'N': 5, 'O': 6, 'F': 7, 'P': 5, 'S': 6, 'Cl': 7, 'Br': 7, 'I': 7}
+        valence_electrons = {'H': 1, 'C': 4, 'N': 5, 'O': 6, 'F': 7, 'P': 5, 'S': 6, 'Cl': 7, 'Br': 7, 'I': 7, 'Li':1}
         symbols = [atom.symbol for atom in self]
         total_valence_electrons = sum(valence_electrons[s] for s in symbols)
         return bool(total_valence_electrons % 2)
@@ -530,22 +530,39 @@ class MolGraph(object):
                     chain.remove(atom2)
         return False
 
+    #def label_equivalent_hydrogens(self):
+    #    """
+    #    Mark all equivalent hydrogens as frozen. For now, this assumes that the
+    #    carbons they are attached to have 4 connections, which means this
+    #    method does not yet work for radicals.
+    #    """
+    #    if self.is_radical():
+    #        raise NotImplementedError('Cannot yet label equivalent hydrogens for radicals')
+    #    for atom in self:
+    #        if (atom.symbol.upper() == 'C'
+    #                and len(atom.connections) == 4
+    #                and not self.is_atom_in_cycle(atom)):
+    #            first_hydrogen = True
+    #            for atom2 in atom.connections:
+    #                if atom2.symbol.upper() == 'H':
+    #                    if first_hydrogen:
+    #                        first_hydrogen = False
+    #                    else:
+    #                        atom2.frozen = True
+
     def label_equivalent_hydrogens(self):
         """
-        Mark all equivalent hydrogens as frozen. For now, this assumes that the
-        carbons they are attached to have 4 connections, which means this
-        method does not yet work for radicals.
+        This version works with radicals. no assumption of four connections on carbon atoms.
+        Also works with other heavy elementts.
         """
-        if self.is_radical():
-            raise NotImplementedError('Cannot yet label equivalent hydrogens for radicals')
+        # Proceed even if the molecule is a radical
         for atom in self:
-            if (atom.symbol.upper() == 'C'
-                    and len(atom.connections) == 4
-                    and not self.is_atom_in_cycle(atom)):
-                first_hydrogen = True
-                for atom2 in atom.connections:
-                    if atom2.symbol.upper() == 'H':
+            if atom.symbol.upper() != 'H' and not self.is_atom_in_cycle(atom):
+                hydrogens = [a for a in atom.connections if a.symbol.upper() == 'H']
+                if len(hydrogens) > 1:
+                    first_hydrogen = True
+                    for hydrogen in hydrogens:
                         if first_hydrogen:
                             first_hydrogen = False
                         else:
-                            atom2.frozen = True
+                            hydrogen.frozen = True
