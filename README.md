@@ -1,59 +1,92 @@
 # Dandelion 
+Dandelion is a code for generating datasets that contain both equilibrium and reactive regions of potential energy surfaces, using automated and efficient sampling of chemical reaction space.
 
-An efficient full-auto exploration of chemical compound space near the transition state utilizing tight binding, single-ended growing string method, and nudged elastic band.
+![dandelion (1000 x 500 px) (2)](https://github.com/user-attachments/assets/e2dec9d2-b750-4db2-89aa-abb9f16f45f2)
 
-## Contact
+Documentation : <https://jjy1031.github.io>
 
-**Minhyeok Lee**  
-Email: [mlee@yonsei.ac.kr](mailto:mlee@yonsei.ac.kr)  
-Research Group: [TCCL Yonsei](http://tccl.yonsei.ac.kr/)
+## Installation
+- Prerequisites
+  - conda
+  - openmpi
 
-## Base References
+### Download Dandelion
 
-- Grambow, Colin A. et al., _Scientific Data_, 7.1, 137 (2020)
-- Schreiner, Mathias et al., _Scientific Data_, 9.1, 779 (2022)
+You can install the code from [our repository](https://github.com/mhyeok1/dandelion_test):
 
+```python
+git clone https://github.com/mhyeok1/dandelion_test.git
+cd dandelion_test
+```
 
-## Setup
+### Setup conda environment
 
-### 1. Conda Setup
-```bash
+This creates a new Conda environment using the specifications provided in `environment.yml` file.
+
+```python
 conda env create -f environment.yml
 conda activate ts
-```
-### 2. Install pyGSM
-Visit the [pyGSM repository](https://github.com/ZimmermanGroup/pyGSM) for instructions or simply use:
-```bash
-pip install -e git+https://github.com/ZimmermanGroup/pyGSM.git#egg=pyGSM
-```
-
-### 3. Install Dandelion
-```bash
-cd Dandelion
 pip install -e .
 ```
-### 4. Install ORCA
-Visit the [ORCA forum](https://orcaforum.kofo.mpg.de/) for installation instructions.  
 
-### 5. Setup Environment Variables in `.bashrc`
+### Install pyGSM
 
-Add ORCA to your path:
-```bash
-export PATH="/path/to/your/orca_directory:$PATH"
+Visit the [pyGSM repository](https://github.com/ZimmermanGroup/pyGSM) for instructions or simply use:
+
+```python
+git clone https://github.com/ZimmermanGroup/pyGSM
+pip install -e .
+```
+By executing `gsm` in terminal, you can verify that the program has been successfully installed.
+
+### Install Orca
+
+You can install ORCA [here](https://orcaforum.kofo.mpg.de/app.php/portal).
+This extracts a tar.xz file.
+
+```python
+tar -xf orca.tar.xz
+```
+By executing `orca` in terminal, you can verify that the program has been successfully downloaded.
+
+### Setup environment variables in `.bashrc`
+
+You can open your `.bashrc` file using:
+```python
+vi ~/.bashrc
 ```
 
-Set the `PYTHONPATH` for pyGSM:
-```bash
-export PYTHONPATH="/path/to/your/pyGSM_directory:$PYTHONPATH"
+Add the following lines to your `.bashrc` file:
+
+1. Add ORCA to your path :
+```python
+export PATH="/path/to/your/orca/directory:$PATH" \
 ```
 
-Adjust the `OMP_NUM_THREADS`:
-```bash
+2. Set the `PYTHONPATH` for pyGSM:
+```python
+export PYTHONPATH=/path/to/your/pyGSM/directory:$PYTHONPATH \
+```
+
+3. Adjust the `OMP_NUM_THREADS`:
+```python
 export OMP_NUM_THREADS=1
 ```
 
-Finally, set the xtb configuration:
-```bash
-export OMP_STACKSIZE=16G
-ulimit -s unlimited
+4. Set the xtb configuration:
+```python
+export OMP_STACKSIZE=16G \
+ulimit -s unlimited\
 ```
+
+Apply the changes:
+```python
+source ~/.bashrc
+``` 
+
+## References 
+- Grambow, Colin A. et al., Scientific Data, 7.1, 137 (2020)
+- Schreiner, Mathias et al., Scientific Data, 9.1, 779 (2022)
+
+## Citation
+If you are using Dandelion in your research, please cite:

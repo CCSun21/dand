@@ -8,6 +8,7 @@ from rdkit import RDLogger
 from ase.io import read, write
 from openbabel import openbabel
 from .ard_gsm.mol import MolGraph, SanitizationError
+#from ard_gsm.mol import MolGraph, SanitizationError
 
 # Suppress Noisy warning in the filter
 RDLogger.logger().setLevel(RDLogger.CRITICAL)
