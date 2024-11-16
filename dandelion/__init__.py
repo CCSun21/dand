@@ -1,6 +1,6 @@
 import argparse
 
-__version__ = '0.7.3'
+__version__ = '0.7.4'
 
 def print_separator(text, width=70):
     border = "╔" + "═" * (width-2) + "╗"

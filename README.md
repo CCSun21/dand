@@ -5,10 +5,15 @@ Dandelion is a code for generating datasets that contain both equilibrium and re
 
 Documentation : <https://jjy1031.github.io>
 
+## References 
+- Grambow, Colin A. et al., Scientific Data, 7.1, 137 (2020)
+- Schreiner, Mathias et al., Scientific Data, 9.1, 779 (2022)
+
 ## Installation
 - Prerequisites
   - conda
   - openmpi
+
 
 ### Download Dandelion
 
@@ -84,9 +89,6 @@ Apply the changes:
 source ~/.bashrc
 ``` 
 
-## References 
-- Grambow, Colin A. et al., Scientific Data, 7.1, 137 (2020)
-- Schreiner, Mathias et al., Scientific Data, 9.1, 779 (2022)
 
 ## Citation
 If you are using Dandelion in your research, please cite:
