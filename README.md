@@ -5,13 +5,13 @@ Documentation : <https://mhyeok1.github.io/dand_docs/>
 
 
 
-
-## References 
-- Grambow, Colin A. et al., Scientific Data, 7.1, 137 (2020)
-- Schreiner, Mathias et al., Scientific Data, 9.1, 779 (2022)
-
 ## Citation
 If you are using Dandelion in your research, please cite:
+- Lee, Minhyeok et al., Advanced Science (2024)
+
+This work builds upon two pioneering papers that should also be cited:
+- Grambow, Colin A. et al., Scientific Data, 7.1, 137 (2020)
+- Schreiner, Mathias et al., Scientific Data, 9.1, 779 (2022)
 
 ## Supporting Information
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14020916.svg)](https://doi.org/10.5281/zenodo.14020916)
