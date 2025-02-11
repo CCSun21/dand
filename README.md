@@ -1,4 +1,6 @@
-# Dandelion 
+<h1 align="left">Dandelion</h1>
+<h3 align="center">A program for automated and efficient sampling of chemical reaction space for MLIP training</h3>
+
 <div align="center">
 <img src="https://github.com/user-attachments/assets/274bd3b0-5793-4abe-ae43-21d73dfabd51" alt="drawing" width="700"/>
 </div>
