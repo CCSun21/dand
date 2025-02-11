@@ -14,6 +14,8 @@ This work builds upon two pioneering papers that should also be cited:
 - Schreiner et al. *Sci. Data* **9**, 779 (2022) [LINK](https://doi.org/10.1038/s41597-022-01870-w)
 
 ## Supporting Information
+The datasets used in the paper are available at zenodo.
+
 <https://doi.org/10.5281/zenodo.14020916>
 
 ## Installation
