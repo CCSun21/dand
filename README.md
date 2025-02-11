@@ -1,4 +1,10 @@
 # Dandelion 
+[![DOI](https://img.shields.io/badge/DOI-advs.202409009-blue.svg)](https://doi.org/10.1002/advs.202409009)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14020916.svg)](https://doi.org/10.5281/zenodo.14020916)
+<div align="center">
+<img src="https://github.com/user-attachments/assets/274bd3b0-5793-4abe-ae43-21d73dfabd51" alt="drawing" width="700"/>
+</div>
+
 Dandelion is a code for generating datasets that contain both equilibrium and reactive regions of potential energy surfaces, using automated and efficient sampling of chemical reaction space.
 
 Documentation : <https://mhyeok1.github.io/dand_docs/>
