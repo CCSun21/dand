@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,linux
 **/*wb97.py
 **/nms
+.xtboptok
 ### Linux ###
 *~
 
