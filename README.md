@@ -1,7 +1,15 @@
 <h1 align="left">Dandelion</h1>
-<h4 align="center">Codes for automated and efficient sampling of chemical reaction space for MLIP training</h4>
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![DOI](https://img.shields.io/badge/DOI-10.1002/advs.202409009-blue.svg)](https://doi.org/10.5281/zenodo.14020916)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14020916.svg)](https://doi.org/10.5281/zenodo.14020916)
 
 <div align="center">
+
+<h4 align="center">Codes for automated and efficient sampling of chemical reaction space for MLIP training</h4>
+
+
+
 <img src="https://github.com/user-attachments/assets/274bd3b0-5793-4abe-ae43-21d73dfabd51" alt="drawing" width="700"/>
 </div>
 
