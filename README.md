@@ -1,7 +1,7 @@
 <h1 align="left">Dandelion</h1>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![DOI](https://img.shields.io/badge/DOI-10.1002/advs.202409009-blue.svg)](https://doi.org/10.5281/zenodo.14020916)
+[![DOI](https://img.shields.io/badge/DOI-10.1002/advs.202409009-blue.svg)](https://doi.org/10.1002/advs.202409009)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14020916.svg)](https://doi.org/10.5281/zenodo.14020916)
 
 <div align="center">
