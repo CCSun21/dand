@@ -1,9 +1,9 @@
 <h1 align="left">Dandelion</h1>
 
+[![docs](https://img.shields.io/badge/docs-mhyeok1.github.io/dand__docs/-brightgreen.svg)](https://mhyeok1.github.io/dand_docs/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://img.shields.io/badge/DOI-10.1002/advs.202409009-blue.svg)](https://doi.org/10.1002/advs.202409009)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14020916.svg)](https://doi.org/10.5281/zenodo.14020916)
-[![pages-build-deployment](https://github.com/mhyeok1/dand_docs/actions/workflows/pages/pages-build-deployment/badge.svg)](https://mhyeok1.github.io/dand_docs/)
 <div align="center">
 
 <h4 align="center">Codes for automated and efficient sampling of chemical reaction space for MLIP training</h4>
