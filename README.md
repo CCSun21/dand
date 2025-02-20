@@ -8,8 +8,7 @@
 <h4 align="center">Codes for automated and efficient sampling of chemical reaction space for MLIP training</h4>
 
 
-
-<img src="https://github.com/user-attachments/assets/274bd3b0-5793-4abe-ae43-21d73dfabd51" alt="drawing" width="700"/>
+<img src="https://github.com/user-attachments/assets/812a9b8a-f497-42f7-a4c7-2d81b1d8c3be" alt="drawing" width="700"/>
 </div>
 
 Dandelion is a code for generating datasets that contain both equilibrium and reactive regions of potential energy surfaces, using automated and efficient sampling of chemical reaction space.
