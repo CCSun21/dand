@@ -20,7 +20,7 @@ Dandelion is a code for generating datasets that contain both equilibrium and re
 ## Citation
 If you find this work useful for your research, please consider citing:
 
-- Lee et al. *Adv. Sci.* 2409009 (2025) [LINK](https://doi.org/10.1002/advs.202409009) 
+- Lee et al. *Adv. Sci.* **12**, 2409009 (2025) [LINK](https://doi.org/10.1002/advs.202409009) 
 
 This work builds upon pioneering works that should also be cited:
 - Grambow et al. *Sci. Data* **7**, 137 (2020) [LINK](https://doi.org/10.1038/s41597-020-0460-4)
