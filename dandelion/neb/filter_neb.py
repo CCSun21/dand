@@ -9,7 +9,7 @@ from tqdm import tqdm
 import numpy as np
 from ase.io import read
 from ase.vibrations import Vibrations
-from xtb.ase.calculator import XTB
+from xtb_ase import XTB
 
 def get_energy_from_xyz(file_path):
     """Extracts the energy of a structure from an XYZ file."""

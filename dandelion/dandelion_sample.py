@@ -38,7 +38,7 @@ def main():
     input_path = args.input_path
     if not os.path.isdir(input_path):
         sys.exit(f"Error: '{input_path}' is not a directory.")
-    output_path = os.path.dirname(os.path.dirname(input_path))
+    output_path = os.path.dirname(input_path)
     max_workers = args.max_workers
     
     if not os.path.exists(output_path):

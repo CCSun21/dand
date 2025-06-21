@@ -1,0 +1,30 @@
+[project]
+name = "dandelion"
+version = "0.1.0"
+description = "Near TS region sampler for machine learning force field"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Minhyeok Lee", email = "mlee@yonsei.ac.kr" }
+]
+dependencies = [
+    "ase==3.23.0",
+    "cmake>=4.0.3",
+    "h5py>=3.14.0",
+    "imageio==2.31.1",
+    "networkx>=3.5",
+    "numpy==1.26.4",
+    "openbabel>=3.1.1.1",
+    "pygsm",
+    "rdkit>=2025.3.3",
+    "setuptools<81",
+    "tqdm>=4.67.1",
+    "xtb-ase",
+]
+
+[project.scripts]
+dand = "dandelion.cli:main"
+
+[tool.uv.sources]
+xtb-ase = { git = "https://github.com/Andrew-S-Rosen/xtb_ase.git" }
+pygsm = { git = "https://github.com/ZimmermanGroup/pyGSM" }

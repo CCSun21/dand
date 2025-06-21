@@ -17,10 +17,10 @@ from PIL import Image, ImageOps
 
 import ase.db
 from ase.io import read, write
-from xtb.ase.calculator import XTB
+from xtb_ase import XTB
 from ase.optimize.bfgs import BFGS
 from ase.utils.forcecurve import fit_images
-from ase.neb import NEB, NEBOptimizer, NEBTools
+from ase.neb import NEB, NEBTools
 from ase.calculators.orca import ORCA
 
 class SuppressStderr:
@@ -184,46 +184,56 @@ def process_seed(seed, n_images, neb_fmax, cineb_fmax, steps, output_path):
             calculation_checker = CalculationChecker(neb)
             neb_tools = NEBTools(neb.images)
 
-            relax_neb = NEBOptimizer(neb, logfile=None)
             db_writer = DBWriter(os.path.join(output, "neb.db"), atom_configs)
             fmaxs = []
             fit_list = []
-            relax_neb.attach(calculation_checker.check_calculations)
-            relax_neb.attach(db_writer.write)
-            relax_neb.attach(lambda: fmaxs.append(neb_tools.get_fmax()))
-            relax_neb.attach(lambda: fit_list.append(get_fit(neb_tools)))
-        
+
+            def attach_callbacks(opt):
+                opt.attach(calculation_checker.check_calculations)
+                opt.attach(db_writer.write)
+                opt.attach(lambda: fmaxs.append(neb_tools.get_fmax()))
+                opt.attach(lambda: fit_list.append(get_fit(neb_tools)))
+
+            # NEB 优化
+            relax_neb = BFGS(neb, logfile=None)
+            attach_callbacks(relax_neb)
             converged = relax_neb.run(fmax=neb_fmax, steps=steps)
 
             if not converged:
-                raise 
-            
-            #print("NEB has converged, turn on CI-NEB ...")
+                raise RuntimeError("NEB did not converge")
+
+            # CI-NEB 优化
             neb.climb = True
-            ci_converged = relax_neb.run(fmax=cineb_fmax, steps=steps)
-                
+            relax_cineb = BFGS(neb, logfile=None)
+            attach_callbacks(relax_cineb)
+            ci_converged = relax_cineb.run(fmax=cineb_fmax, steps=steps)
+
             if ci_converged:
-                open(os.path.join(output, "converged"), "w")
-                #print("Reaction converged ... ")
-            fit_list = np.array(fit_list)
-            fig = plot_mep(fit_list)
+                open(os.path.join(output, "converged"), "w").close()
+            fit_list_np = np.array(fit_list)
+            fig = plot_mep(fit_list_np)
             if ci_converged:
-                np.save(os.path.join(output, "fitlist.npy"), fit_list)
+                np.save(os.path.join(output, "fitlist.npy"), fit_list_np)
 
             fig.savefig(os.path.join(output, "mep.png"))
             json.dump(fmaxs, open(os.path.join(output, "fmaxs.json"), "w"), indent=4)
-            transition_state = max(atom_configs, key=lambda x: x.get_potential_energy())
-            write(os.path.join(output, "transition_state.xyz"), transition_state)
-            write(os.path.join(output, "transition_state.png"), transition_state)
-            write(os.path.join(output, "reactant.xyz"), atom_configs[0])
-            write(os.path.join(output, "reactant.png"), atom_configs[0])
-            write(os.path.join(output, "product.xyz"), atom_configs[-1])
-            write(os.path.join(output, "product.png"), atom_configs[-1])
-            write(os.path.join(output, "mep.xyz"), atom_configs)        
-            frames_to_gif(atom_configs, os.path.join(output, "mep.gif"))
+            # transition_state: 取能量最高的image（排除首尾）
+            neb_images = neb.images
+            if len(neb_images) > 2:
+                ts_image = max(neb_images[1:-1], key=lambda x: x.get_potential_energy())
+            else:
+                ts_image = neb_images[len(neb_images)//2]
+            write(os.path.join(output, "transition_state.xyz"), ts_image)
+            write(os.path.join(output, "transition_state.png"), ts_image)
+            write(os.path.join(output, "reactant.xyz"), neb_images[0])
+            write(os.path.join(output, "reactant.png"), neb_images[0])
+            write(os.path.join(output, "product.xyz"), neb_images[-1])
+            write(os.path.join(output, "product.png"), neb_images[-1])
+            write(os.path.join(output, "mep.xyz"), neb_images)
+            frames_to_gif(neb_images, os.path.join(output, "mep.gif"))
 
             return seed
-        
+
         except Exception as e:
             #print(f"Error processing seed {seed}: {e}")
             return None

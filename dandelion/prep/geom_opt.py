@@ -6,7 +6,7 @@ import warnings
 
 from ase.io import read
 from ase.optimize import BFGS
-from xtb.ase.calculator import XTB
+from xtb_ase import XTB
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
